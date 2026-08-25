@@ -441,7 +441,7 @@
       </div>
     </section>
 
-    <!-- Contact Sectio -->
+    <!-- Contact Section -->
     <section id="contact">
       <h2 class="section-title" style="text-align: center;">Get In Touch</h2>
       <p class="section-subtitle" style="text-align: center;">Have an opportunity or question? Leave a message.</p>
@@ -449,15 +449,15 @@
       <form class="contact-form" id="contactForm">
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" id="name" required placeholder="John Doe" />
+          <input type="text" id="name" required placeholder="John Doe" autocomplete="name" />
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" required placeholder="john@example.com" />
+          <input type="email" id="email" required placeholder="john@example.com" autocomplete="email" />
         </div>
         <div class="form-group">
           <label for="message">Message</label>
-          <textarea id="message" rows="5" required placeholder="Let's connect regarding..."></textarea>
+          <textarea id="message" rows="5" required placeholder="Let's connect regarding..." autocomplete="off"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
         <p class="status-msg" id="statusMsg"></p>
@@ -494,7 +494,7 @@
     // AUTO-DETECT API BASE URL
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
       ? 'http://localhost:5000' 
-      : ''; 
+      : 'https://portfolio-6gsp.onrender.com'; 
 
     // Contact Form submission
     const contactForm = document.getElementById('contactForm');
@@ -505,6 +505,7 @@
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
+      statusMsg.textContent = '';
 
       const payload = {
         name: document.getElementById('name').value,
@@ -513,15 +514,22 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/contact/send`, {
+        // Fixed endpoint route to match standard backend API structure (/api/contact)
+        const res = await fetch(`${API_BASE}/api/contact`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        statusMsg.style.color = '#10b981';
-        statusMsg.textContent = data.message || 'Message sent successfully!';
-        contactForm.reset();
+        
+        if (res.ok) {
+          statusMsg.style.color = '#10b981';
+          statusMsg.textContent = data.message || 'Message sent successfully!';
+          contactForm.reset();
+        } else {
+          statusMsg.style.color = '#ef4444';
+          statusMsg.textContent = data.error || 'Failed to send message. Please try again.';
+        }
       } catch (err) {
         statusMsg.style.color = '#ef4444';
         statusMsg.textContent = 'Something went wrong. Please reach out directly.';
