@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Portfolio | Android & Full-Stack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #070a12;
+      --card: rgba(17, 24, 39, 0.75);
+      --card-border: rgba(59, 130, 246, 0.2);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        linear-gradient(rgba(7, 10, 18, 0.88), rgba(7, 10, 18, 0.94)),
+        url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80');
+      background-size: auto, auto, auto, auto, cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(7, 10, 18, 0.8);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+    }
+    .logo { font-weight: 700; font-size: 1.25rem; color: #fff; text-decoration: none; }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+
+    /* Layout Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem 2rem; }
+
+    /* Hero */
+    .hero {
+      padding: 5rem 0 3rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero h1 { font-size: 2.75rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+    .hero h1 span { 
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; }
+    .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s ease;
+    }
+    .btn-primary { 
+      background: var(--primary); 
+      color: #fff; 
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-outline { 
+      background: rgba(17, 24, 39, 0.6); 
+      border: 1px solid var(--card-border); 
+      color: #fff; 
+      backdrop-filter: blur(8px);
+    }
+    .btn-outline:hover { background: rgba(31, 41, 61, 0.8); border-color: var(--primary); }
+
+    .avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    .avatar {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 3px solid rgba(59, 130, 246, 0.6);
+      object-fit: cover;
+      box-shadow: 0 0 35px rgba(59, 130, 246, 0.35);
+    }
+
+    /* Section Styles */
+    section { padding: 4rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .section-subtitle { color: var(--text-muted); margin-bottom: 2.5rem; }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+    .skill-card {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      padding: 1.25rem 1rem;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 500;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .skill-card:hover { 
+      transform: translateY(-3px); 
+      border-color: var(--primary); 
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+    .project-img {
+      width: 100%;
+      height: 180px;
+      background: #1e293b;
+      object-fit: cover;
+    }
+    .project-content { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-content h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .project-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem; flex: 1; }
+    .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tag {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* Contact Form */
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      padding: 2rem;
+      border-radius: 14px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.9rem; font-weight: 500; }
+    .form-group input, .form-group textarea {
+      background: rgba(11, 15, 23, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .status-msg { font-size: 0.9rem; text-align: center; margin-top: 0.5rem; }
+
+    /* Floating AI Recruiter Assistant */
+    .ai-bubble-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 200;
+      transition: transform 0.2s;
+    }
+    .ai-bubble-btn:hover { transform: scale(1.05); }
+
+    .ai-modal {
+      position: fixed;
+      bottom: 90px;
+      right: 25px;
+      width: 380px;
+      height: 500px;
+      max-width: calc(100vw - 50px);
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      overflow: hidden;
+    }
+    .ai-header {
+      background: rgba(23, 32, 51, 0.9);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .ai-header h4 { font-size: 1rem; }
+    .ai-close-btn { background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; }
+    .ai-chat-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .ai-msg {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      max-width: 85%;
+    }
+    .ai-msg.bot {
+      background: #1f293d;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .ai-msg.user {
+      background: var(--primary);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+    .ai-input-wrapper {
+      display: flex;
+      padding: 0.75rem;
+      border-top: 1px solid var(--card-border);
+      gap: 0.5rem;
+      background: rgba(11, 15, 23, 0.8);
+    }
+    .ai-input-wrapper input {
+      flex: 1;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--card-border);
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .ai-input-wrapper button {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      padding: 0 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Footer */
+    footer { text-align: center; padding: 2.5rem 0; color: var(--text-muted); font-size: 0.9rem; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; text-align: center; padding: 3rem 0; }
+      .cta-group { justify-content: center; }
+      .avatar-wrapper { order: -1; }
+      .avatar { width: 180px; height: 180px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">Dev<span>Portfolio</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero Section -->
+    <header class="hero" id="about">
+      <div>
+        <h1>Hi, I'm a <br><span>Full-Stack, AI & Mobile</span> Developer.</h1>
+        <p>I build high-performance full-stack and mobile applications using modern frontend and backend technologies, while integrating AI, LLMs, and AI agents to create intelligent, scalable, and user-friendly solutions.</p>
+        <div class="cta-group">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="assets/resume.pdf" target="_blank" class="btn btn-outline">Download CV</a>
+        </div>
+      </div>
+      <div class="avatar-wrapper">
+        <img src="images/profile.jpg" alt="Profile Photo" class="avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80'" />
+      </div>
+    </header>
+
+    <!-- Skills Section -->
+    <section id="skills">
+      <h2 class="section-title">Technical Expertise</h2>
+      <p class="section-subtitle">Core technologies and frameworks I use to build scalable products.</p>
+      <div class="skills-grid">
+        <div class="skill-card">HTML</div>
+        <div class="skill-card">CSS</div>
+        <div class="skill-card">Java</div>
+        <div class="skill-card">Python</div>
+        <div class="skill-card">JavaScript</div>
+        <div class="skill-card">React.js</div>
+        <div class="skill-card">Node.js</div>
+        <div class="skill-card">Room / SQLite</div>
+        <div class="skill-card">REST APIs</div>
+        <div class="skill-card">MongoDB</div>
+        <div class="skill-card">Kotlin</div>
+        <div class="skill-card">AI Integration</div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-subtitle">Selected web applications and Android apps built from scratch.</p>
+      <div class="projects-grid">
+        
+        <!-- Project 1 -->
+        <div class="project-card">
+          <img src="images/project1.png" alt="AI Powered Home Rental and Lease System" class="project-img" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&auto=format&fit=crop&q=80'" />
+          <div class="project-content">
+            <h3>AI Powered Home Rental & Lease System</h3>
+            <p>An AI-powered platform for smart property search, personalized recommendations, and rental/lease assistance.</p>
+            <div class="tags">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">MongoDB</span>
+              <span class="tag">Gemini API</span>
+            </div>
+            <a href="https://ai-home-rental-system.onrender.com/" target="_blank" class="btn btn-outline">View Live</a>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card">
+          <img src="images/project2.png" alt="AI Powered Student Hub for Skill Share" class="project-img" onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80'" />
+          <div class="project-content">
+            <h3>AI Student Hub for Skill Share</h3>
+            <p>An AI-powered platform for students to share skills, collaborate on projects, and receive personalized learning recommendations.</p>
+            <div class="tags">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">MongoDB</span>
+              <span class="tag">Gemini API</span>
+            </div>
+            <a href="https://stunning-beignet-044d17.netlify.app/" target="_blank" class="btn btn-outline">View Live</a>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card">
+          <img src="images/project3.png" alt="Sh Studios" class="project-img" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80'" />
+          <div class="project-content">
+            <h3>Sh Studios</h3>
+            <p>SH Studio is a web development service that helps clients build modern, responsive websites and connect with developers for custom website projects, business websites, and web solutions.</p>
+            <div class="tags">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">Express</span>
+              <span class="tag">MongoDb</span>
+              <span class="tag">Node.js</span>
+            </div>
+            <a href="https://sh-studio.onrender.com/" target="_blank" class="btn btn-outline">View Live</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Contact Sectio -->
+    <section id="contact">
+      <h2 class="section-title" style="text-align: center;">Get In Touch</h2>
+      <p class="section-subtitle" style="text-align: center;">Have an opportunity or question? Leave a message.</p>
+      
+      <form class="contact-form" id="contactForm">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" required placeholder="John Doe" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="john@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" rows="5" required placeholder="Let's connect regarding..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
+        <p class="status-msg" id="statusMsg"></p>
+      </form>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 Portfolio. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- AI Recruiter Assistant Widget -->
+  <button class="ai-bubble-btn" id="aiToggle">
+    💬 Ask AI About Me
+  </button>
+
+  <div class="ai-modal" id="aiModal">
+    <div class="ai-header">
+      <h4>Recruiter AI Assistant</h4>
+      <button class="ai-close-btn" id="aiClose">&times;</button>
+    </div>
+    <div class="ai-chat-body" id="chatBody">
+      <div class="ai-msg bot">
+        Hello! I'm the developer's AI assistant. Ask me about tech stack experience, projects, phone number, or ask for my resume to download it directly!
+      </div>
+    </div>
+    <form class="ai-input-wrapper" id="aiForm">
+      <input type="text" id="aiInput" placeholder="e.g. Can I download your resume?" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    // AUTO-DETECT API BASE URL
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000' 
+      : ''; 
+
+    // Contact Form submission
+    const contactForm = document.getElementById('contactForm');
+    const statusMsg = document.getElementById('statusMsg');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      const payload = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/contact/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        statusMsg.style.color = '#10b981';
+        statusMsg.textContent = data.message || 'Message sent successfully!';
+        contactForm.reset();
+      } catch (err) {
+        statusMsg.style.color = '#ef4444';
+        statusMsg.textContent = 'Something went wrong. Please reach out directly.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
+    });
+
+    // AI Recruiter Assistant UI Logic
+    const aiToggle = document.getElementById('aiToggle');
+    const aiModal = document.getElementById('aiModal');
+    const aiClose = document.getElementById('aiClose');
+    const aiForm = document.getElementById('aiForm');
+    const aiInput = document.getElementById('aiInput');
+    const chatBody = document.getElementById('chatBody');
+
+    aiToggle.addEventListener('click', () => {
+      aiModal.style.display = aiModal.style.display === 'flex' ? 'none' : 'flex';
+      if (aiModal.style.display === 'flex') aiInput.focus();
+    });
+
+    aiClose.addEventListener('click', () => {
+      aiModal.style.display = 'none';
+    });
+
+    aiForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = aiInput.value.trim();
+      if (!query) return;
+
+      appendMessage(query, 'user', false);
+      aiInput.value = '';
+
+      const loadingMsg = appendMessage('Thinking...', 'bot', false);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/ai/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: query })
+        });
+        
+        const data = await res.json();
+        chatBody.removeChild(loadingMsg);
+        appendMessage(data.reply || "I couldn't generate a response right now.", 'bot', true);
+      } catch (err) {
+        chatBody.removeChild(loadingMsg);
+        appendMessage('Failed to connect to the assistant server. Please try again.', 'bot', false);
+      }
+    });
+
+    // Modified appendMessage to support rendering clickable HTML links (like PDF download buttons)
+    function appendMessage(text, sender, isHtml = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `ai-msg ${sender}`;
+      
+      if (isHtml) {
+        msgDiv.innerHTML = text;
+      } else {
+        msgDiv.textContent = text;
+      }
+
+      chatBody.appendChild(msgDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return msgDiv;
+    }
+  </script>
+</body>
+</html>
