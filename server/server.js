@@ -11,6 +11,12 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: 'All fields are required.' });
     }
 
+    // Ensure environment variables are loaded
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('CRITICAL ERROR: EMAIL_USER or EMAIL_PASS environment variables are missing on Render.');
+      return res.status(500).json({ success: false, error: 'Server configuration error: Email credentials missing.' });
+    }
+
     // Configure Nodemailer transporter using environment variables from Render
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -34,7 +40,7 @@ router.post('/', async (req, res) => {
     return res.status(200).json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ success: false, error: 'Failed to send email. Please check server logs.' });
+    return res.status(500).json({ success: false, error: error.message || 'Failed to send email. Please check server logs.' });
   }
 });
 
