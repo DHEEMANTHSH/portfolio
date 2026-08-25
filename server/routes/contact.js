@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 router.post('/', async (req, res) => {
   console.log('Incoming request to /api/contact:', req.body);
@@ -12,39 +14,25 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: 'All fields are required.' });
     }
 
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('CRITICAL ERROR: EMAIL_USER or EMAIL_PASS environment variables are missing.');
-      return res.status(500).json({ success: false, error: 'Server configuration error: Email credentials missing.' });
+    if (!process.env.RESEND_API_KEY || !process.env.EMAIL_USER) {
+      console.error('CRITICAL ERROR: RESEND_API_KEY or EMAIL_USER environment variables are missing.');
+      return res.status(500).json({ success: false, error: 'Server configuration error: API keys missing.' });
     }
 
-    // Explicit SMTP configuration with connection timeout prevention
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // use SSL
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      },
-      connectionTimeout: 15000, // 15 seconds timeout buffer
-      socketTimeout: 15000
-    });
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
+    console.log('Attempting to send email via Resend API (HTTPS)...');
+    
+    const data = await resend.emails.send({
+      from: 'Portfolio Contact <onboarding@resend.dev>',
+      to: process.env.EMAIL_USER, // Your destination inbox
       subject: `New Portfolio Contact from ${name}`,
       text: `You have received a new message from your portfolio contact form.\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}`
-    };
+    });
 
-    console.log('Attempting to send email via secure SMTP...');
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully!');
-
+    console.log('Email sent successfully via Resend:', data);
     return res.status(200).json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ success: false, error: error.message || 'Failed to send email. Please check server logs.' });
+    return res.status(500).json({ success: false, error: error.message || 'Failed to send email.' });
   }
 });
 
