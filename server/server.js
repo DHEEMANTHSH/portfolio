@@ -1,47 +1,39 @@
+require('dotenv').config();
+
 const express = require('express');
-const router = express.Router();
-const nodemailer = require('nodemailer');
+const cors = require('cors');
+const path = require('path');
 
-router.post('/', async (req, res) => {
-  try {
-    const { name, email, message } = req.body;
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-    // Validate incoming fields
-    if (!name || !email || !message) {
-      return res.status(400).json({ success: false, error: 'All fields are required.' });
-    }
+app.use(cors());
+app.use(express.json());
 
-    // Ensure environment variables are loaded
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('CRITICAL ERROR: EMAIL_USER or EMAIL_PASS environment variables are missing on Render.');
-      return res.status(500).json({ success: false, error: 'Server configuration error: Email credentials missing.' });
-    }
+// Global safety check for routes
+try {
+  const aiRoutes = require('./routes/ai');
+  const contactRoutes = require('./routes/contact');
+  app.use('/api/ai', aiRoutes);
+  app.use('/api/contact', contactRoutes);
+} catch (err) {
+  console.error('CRITICAL: Failed to load routes:', err);
+}
 
-    // Configure Nodemailer transporter using environment variables from Render
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+// Static frontend serving
+app.use(express.static(path.join(__dirname, '../client')));
 
-    // Email options configuration
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Sends the message to your own inbox
-      subject: `New Portfolio Contact from ${name}`,
-      text: `You have received a new message from your portfolio contact form.\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}`
-    };
-
-    // Send the email
-    await transporter.sendMail(mailOptions);
-
-    return res.status(200).json({ success: true, message: 'Message sent successfully!' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return res.status(500).json({ success: false, error: error.message || 'Failed to send email. Please check server logs.' });
-  }
+// Global unhandled exception catcher to stop "Application exited early" crashes
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
 });
 
-module.exports = router;
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION:', reason);
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`================================================`);
+  console.log(`✅ Server successfully started on port ${PORT}`);
+  console.log(`================================================`);
+});
