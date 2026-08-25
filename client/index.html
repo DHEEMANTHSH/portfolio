@@ -8,6 +8,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- EmailJS Browser SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    // Initialize EmailJS with your Public Key
+    emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+  </script>
+
   <style>
     :root {
       --bg: #070a12;
@@ -491,12 +498,12 @@
   </div>
 
   <script>
-    // AUTO-DETECT API BASE URL
+    // AUTO-DETECT API BASE URL FOR CHATBOT
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
       ? 'http://localhost:5000' 
       : 'https://portfolio-6gsp.onrender.com'; 
 
-    // Contact Form submission with timeout protection to prevent infinite "Sending..." hangs
+    // Contact Form submission via EmailJS (Direct to ruthikdheemanth@gmail.com)
     const contactForm = document.getElementById('contactForm');
     const statusMsg = document.getElementById('statusMsg');
 
@@ -507,49 +514,23 @@
       submitBtn.textContent = 'Sending...';
       statusMsg.textContent = '';
 
-      const payload = {
+      const templateParams = {
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim(),
         message: document.getElementById('message').value.trim()
       };
 
-      // 25-second timeout controller to handle Render free-tier cold starts gracefully
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25000);
-
       try {
-        const res = await fetch(`${API_BASE}/api/contact`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          signal: controller.signal
-        });
+        // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your EmailJS credentials
+        await emailjs.send('service_dfyebpa', 'YOUR_TEMPLATE_ID', templateParams);
 
-        clearTimeout(timeoutId);
-
-        let data;
-        try {
-          data = await res.json();
-        } catch (jsonErr) {
-          data = { success: false, error: 'Invalid response from server.' };
-        }
-        
-        if (res.ok && data.success) {
-          statusMsg.style.color = '#10b981';
-          statusMsg.textContent = data.message || 'Message sent successfully!';
-          contactForm.reset();
-        } else {
-          statusMsg.style.color = '#ef4444';
-          statusMsg.textContent = data.error || 'Failed to send message. Please try again.';
-        }
+        statusMsg.style.color = '#10b981';
+        statusMsg.textContent = 'Message sent successfully!';
+        contactForm.reset();
       } catch (err) {
-        clearTimeout(timeoutId);
+        console.error('EmailJS Error:', err);
         statusMsg.style.color = '#ef4444';
-        if (err.name === 'AbortError') {
-          statusMsg.textContent = 'Request timed out. Server might be waking up—please try again.';
-        } else {
-          statusMsg.textContent = 'Something went wrong. Please reach out directly.';
-        }
+        statusMsg.textContent = 'Failed to send message. Please try again.';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send Message';
@@ -599,7 +580,6 @@
       }
     });
 
-    // Modified appendMessage to support rendering clickable HTML links (like PDF download buttons)
     function appendMessage(text, sender, isHtml = false) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `ai-msg ${sender}`;
