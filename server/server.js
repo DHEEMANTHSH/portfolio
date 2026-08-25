@@ -1,8 +1,12 @@
-require('dotenv').config();
+const path = require('path');
+// Safely load .env from current directory or fallback one level up if nested
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+if (!process.env.EMAIL_USER) {
+  require('dotenv').config({ path: path.join(__dirname, '../.env') });
+}
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
