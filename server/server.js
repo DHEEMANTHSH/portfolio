@@ -1,42 +1,41 @@
-// Load environment variables from the .env file located one folder up
-require('dotenv').config({ path: '../.env' });
-
 const express = require('express');
-const cors = require('cors');
-const path = require('path');
+const router = express.Router();
+const nodemailer = require('nodemailer');
 
-// Import your API route handlers
-const aiRoutes = require('./routes/ai');
-const contactRoutes = require('./routes/contact');
+router.post('/', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
 
-const app = express();
+    // Validate incoming fields
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, error: 'All fields are required.' });
+    }
 
-// Use PORT from environment variables (for Render/Railway) or default to 5000 (for local)
-const PORT = process.env.PORT || 5000;
+    // Configure Nodemailer transporter using environment variables from Render
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
 
-// Middleware configuration
-app.use(cors()); // Enable Cross-Origin Resource Sharing
-app.use(express.json()); // Parse incoming JSON requests
+    // Email options configuration
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER, // Sends the message to your own inbox
+      subject: `New Portfolio Contact from ${name}`,
+      text: `You have received a new message from your portfolio contact form.\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}`
+    };
 
-// ==========================================
-// Application Routing & Static Content
-// ==========================================
+    // Send the email
+    await transporter.sendMail(mailOptions);
 
-// 1. Serve static frontend files from the 'client' directory.
-// This automatically serves your index.html when visiting the base URL.
-app.use(express.static(path.join(__dirname, '../client')));
-
-// 2. Define API Routes
-app.use('/api/ai', aiRoutes);
-app.use('/api/contact', contactRoutes);
-
-// ==========================================
-// Start the Server
-// ==========================================
-app.listen(PORT, () => {
-  console.log(`================================================`);
-  console.log(`✅ Server successfully started.`);
-  console.log(`🌍 Listening on port: ${PORT}`);
-  console.log(`🔗 Local Access: http://localhost:${PORT}`);
-  console.log(`================================================`);
+    return res.status(200).json({ success: true, message: 'Message sent successfully!' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return res.status(500).json({ success: false, error: 'Failed to send email. Please check server logs.' });
+  }
 });
+
+module.exports = router;
