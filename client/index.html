@@ -11,8 +11,8 @@
   <!-- EmailJS Browser SDK -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
-    // Initialize EmailJS with your Public Key
-    emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+    // Initialized with your EmailJS Public Key
+    emailjs.init("pAKMSq0UPn1pRfw4R");
   </script>
 
   <style>
@@ -521,8 +521,7 @@
       };
 
       try {
-        // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your EmailJS credentials
-        await emailjs.send('service_dfyebpa', 'YOUR_TEMPLATE_ID', templateParams);
+        await emailjs.send('service_dfyebpa', 'template_m3h86yl', templateParams);
 
         statusMsg.style.color = '#10b981';
         statusMsg.textContent = 'Message sent successfully!';
