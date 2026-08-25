@@ -496,7 +496,7 @@
       ? 'http://localhost:5000' 
       : 'https://portfolio-6gsp.onrender.com'; 
 
-    // Contact Form submission
+    // Contact Form submission with timeout protection to prevent infinite "Sending..." hangs
     const contactForm = document.getElementById('contactForm');
     const statusMsg = document.getElementById('statusMsg');
 
@@ -508,21 +508,33 @@
       statusMsg.textContent = '';
 
       const payload = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        message: document.getElementById('message').value
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        message: document.getElementById('message').value.trim()
       };
 
+      // 25-second timeout controller to handle Render free-tier cold starts gracefully
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+
       try {
-        // Fixed endpoint route to match standard backend API structure (/api/contact)
         const res = await fetch(`${API_BASE}/api/contact`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: controller.signal
         });
-        const data = await res.json();
+
+        clearTimeout(timeoutId);
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          data = { success: false, error: 'Invalid response from server.' };
+        }
         
-        if (res.ok) {
+        if (res.ok && data.success) {
           statusMsg.style.color = '#10b981';
           statusMsg.textContent = data.message || 'Message sent successfully!';
           contactForm.reset();
@@ -531,8 +543,13 @@
           statusMsg.textContent = data.error || 'Failed to send message. Please try again.';
         }
       } catch (err) {
+        clearTimeout(timeoutId);
         statusMsg.style.color = '#ef4444';
-        statusMsg.textContent = 'Something went wrong. Please reach out directly.';
+        if (err.name === 'AbortError') {
+          statusMsg.textContent = 'Request timed out. Server might be waking up—please try again.';
+        } else {
+          statusMsg.textContent = 'Something went wrong. Please reach out directly.';
+        }
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send Message';
