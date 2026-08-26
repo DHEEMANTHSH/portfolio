@@ -11,7 +11,6 @@
   <!-- EmailJS Browser SDK -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
-    // Initialized with your EmailJS Public Key
     emailjs.init("pAKMSq0UPn1pRfw4R");
   </script>
 
@@ -451,20 +450,20 @@
     <!-- Contact Section -->
     <section id="contact">
       <h2 class="section-title" style="text-align: center;">Get In Touch</h2>
-      <p class="section-subtitle" style="text-align: center;">Have an opportunity or question? Leave a message.</p>
+      <p class="section-subtitle" style="text-align: center;">Have a job opportunity, internship, or project? Let me know the details below.</p>
       
       <form class="contact-form" id="contactForm">
         <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" required placeholder="John Doe" autocomplete="name" />
+          <label for="name">Your Name / Company</label>
+          <input type="text" id="name" required placeholder="e.g. Google Recruiter or John Smith" autocomplete="name" />
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required placeholder="john@example.com" autocomplete="email" />
+          <label for="email">Your Email</label>
+          <input type="email" id="email" required placeholder="name@company.com" autocomplete="email" />
         </div>
         <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" rows="5" required placeholder="Let's connect regarding..." autocomplete="off"></textarea>
+          <label for="message">Direct Message / Inquiry</label>
+          <textarea id="message" rows="5" required placeholder="Type your message here... Let me know about job openings, project requirements, or collaboration details!" autocomplete="off"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
         <p class="status-msg" id="statusMsg"></p>
@@ -498,12 +497,11 @@
   </div>
 
   <script>
-    // AUTO-DETECT API BASE URL FOR CHATBOT
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
       ? 'http://localhost:5000' 
       : 'https://portfolio-6gsp.onrender.com'; 
 
-    // Contact Form submission via EmailJS (Direct to ruthikdheemanth@gmail.com)
+    // Contact Form submission via EmailJS (Direct to ruthikdheemanth@gmail.com in real-time)
     const contactForm = document.getElementById('contactForm');
     const statusMsg = document.getElementById('statusMsg');
 
@@ -524,7 +522,7 @@
         await emailjs.send('service_dfyebpa', 'template_m3h86yl', templateParams);
 
         statusMsg.style.color = '#10b981';
-        statusMsg.textContent = 'Message sent successfully!';
+        statusMsg.textContent = 'Message sent successfully! I will get back to you soon.';
         contactForm.reset();
       } catch (err) {
         console.error('EmailJS Error:', err);
